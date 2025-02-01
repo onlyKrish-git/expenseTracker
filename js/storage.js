@@ -8,10 +8,12 @@ class StorageManager {
             EXPENSES: 'expenses',
             BUDGET: 'monthlyBudget',
             CURRENCY: 'currency',
-            THEME: 'theme'
+            THEME: 'theme',
+            QUICK_BUTTONS: 'quickButtons'
         };
         this.initializeStorage();
     }
+
 
     // Initialize storage with default values if empty
     initializeStorage() {
@@ -27,7 +29,17 @@ class StorageManager {
         if (!localStorage.getItem(this.STORAGE_KEYS.THEME)) {
             localStorage.setItem(this.STORAGE_KEYS.THEME, 'light');
         }
+        if (!localStorage.getItem(this.STORAGE_KEYS.QUICK_BUTTONS)) {
+            const defaultButtons = [
+                { description: 'Coffee', amount: 20, category: 'Food' },
+                { description: 'Lunch', amount: 100, category: 'Food' },
+                { description: 'Transport', amount: 50, category: 'Transport' },
+                { description: 'Snacks', amount: 30, category: 'Food' }
+            ];
+            localStorage.setItem(this.STORAGE_KEYS.QUICK_BUTTONS, JSON.stringify(defaultButtons));
+        }
     }
+
 
     // Expense Management
     getAllExpenses() {
@@ -128,6 +140,32 @@ class StorageManager {
         }
     }
 
+    // Quick Button Management
+    getQuickButtons() {
+        return JSON.parse(localStorage.getItem(this.STORAGE_KEYS.QUICK_BUTTONS));
+    }
+
+    addQuickButton(button) {
+        const buttons = this.getQuickButtons();
+        buttons.push(button);
+        localStorage.setItem(this.STORAGE_KEYS.QUICK_BUTTONS, JSON.stringify(buttons));
+        return buttons;
+    }
+
+    removeQuickButton(index) {
+        const buttons = this.getQuickButtons();
+        buttons.splice(index, 1);
+        localStorage.setItem(this.STORAGE_KEYS.QUICK_BUTTONS, JSON.stringify(buttons));
+        return buttons;
+    }
+
+    updateQuickButton(index, updatedButton) {
+        const buttons = this.getQuickButtons();
+        buttons[index] = updatedButton;
+        localStorage.setItem(this.STORAGE_KEYS.QUICK_BUTTONS, JSON.stringify(buttons));
+        return buttons;
+    }
+
     // Clear all data
     clearAllData() {
         Object.values(this.STORAGE_KEYS).forEach(key => {
@@ -137,5 +175,5 @@ class StorageManager {
     }
 }
 
+
 // Create and export a single instance
-const storageManager = new StorageManager();

@@ -14,8 +14,10 @@ class ExpenseTracker {
         this.loadCurrency();
         this.updateStats();
         this.displayExpenses();
+        this.displayQuickButtons();
         chartManager.updateCharts();
     }
+
 
     // Set up all event listeners
     setupEventListeners() {
@@ -24,6 +26,13 @@ class ExpenseTracker {
             e.preventDefault();
             this.handleExpenseSubmission();
         });
+
+        // Custom Quick Button Form
+        document.getElementById('quickButtonForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleQuickButtonSubmission();
+        });
+
 
         // Theme toggle
         document.getElementById('themeToggle').addEventListener('click', () => {
@@ -77,6 +86,47 @@ class ExpenseTracker {
         this.displayExpenses();
         chartManager.updateCharts();
     }
+
+    // Display quick buttons
+    displayQuickButtons() {
+        const quickButtonsContainer = document.getElementById('quickAddButtons');
+        const buttons = storageManager.getQuickButtons();
+        const currency = storageManager.getCurrency();
+
+        quickButtonsContainer.innerHTML = buttons.map((button, index) => `
+            <div class="quick-button-wrapper">
+                <button onclick="expenseTracker.quickAdd('${button.description}', ${button.amount}, '${button.category}')" 
+                        class="btn btn-outline-primary">
+                    ${button.description} ${currency}${button.amount}
+                </button>
+                <button onclick="expenseTracker.removeQuickButton(${index})" 
+                        class="btn btn-sm btn-danger ms-1">×</button>
+            </div>
+        `).join('');
+    }
+
+    // Handle new quick button submission
+    handleQuickButtonSubmission() {
+        const description = document.getElementById('quickButtonDescription').value;
+        const amount = parseFloat(document.getElementById('quickButtonAmount').value);
+        const category = document.getElementById('quickButtonCategory').value;
+
+        if (description && amount && category) {
+            const button = { description, amount, category };
+            storageManager.addQuickButton(button);
+            this.displayQuickButtons();
+            document.getElementById('quickButtonForm').reset();
+            this.showNotification('Quick button added successfully!', 'success');
+        }
+    }
+
+    // Remove quick button
+    removeQuickButton(index) {
+        storageManager.removeQuickButton(index);
+        this.displayQuickButtons();
+        this.showNotification('Quick button removed successfully!', 'info');
+    }
+
 
     // Display expenses in the list
     displayExpenses() {
@@ -195,4 +245,3 @@ class ExpenseTracker {
 }
 
 // Create and initialize the expense tracker
-const expenseTracker = new ExpenseTracker();

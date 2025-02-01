@@ -69,8 +69,28 @@ body {
     flex-wrap: wrap;
 }
 
-.quick-add-buttons .btn {
+.quick-button-wrapper {
+    display: flex;
+    align-items: center;
     margin: 5px;
+}
+
+.quick-button-wrapper .btn-outline-primary {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin: 0;
+}
+
+.quick-button-wrapper .btn-danger {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding: 0.375rem 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.quick-button-wrapper:hover .btn-danger {
+    opacity: 1;
 }
 
 /* Form Styles */
@@ -218,11 +238,19 @@ body {
         font-size: 1.1rem;
     }
 
-    .quick-add-buttons .btn {
+    .quick-button-wrapper {
         flex: 1 1 calc(50% - 10px);
+    }
+
+    .quick-button-wrapper .btn-outline-primary {
+        flex: 1;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+    }
+
+    .quick-button-wrapper .btn-danger {
+        opacity: 1;
     }
 
     #expenseForm {
@@ -267,4 +295,3 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--hover-color);
